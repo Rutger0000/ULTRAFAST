@@ -3,12 +3,12 @@
 #-neural network and lattice
 #-hyper-parameters of ground state and dynamic simulations
 
-############################ Parallelizzation ##################################
+############################ Parallelization ###################################
 using Distributed
 #How many workers do you want? Set Nworkers to number of CPUs
 #you want to add on top of the master CPU. Default Nworkers = 0
-Nworkers = 3
-addprocs(Nworkers)
+Nworkers = 8
+addprocs(Nworkers) 
 
 ################################################################################
 ###################### Neural network and lattice ##############################
@@ -17,7 +17,7 @@ Lx = 4
 Ly = 4
 
 #How many hidden units M=Alpha*Lx*Ly do you want? Set Alpha
-Alpha = 2
+Alpha = 4
 
 #What is the exchange interaction along x and y? Set Jx and Jy (default = 1)
 Jx = 1
@@ -36,21 +36,21 @@ nIter = 300
 nSampleGs = 2000
 
 #How small do you want the learning rate? Set stepSize
-stepSize = 0.005
+stepSize = 0.005 # learning rate --- same as in thesis of Fabiani (0.005)
 
 ################################################################################
 ############################## Dynamics ########################################
 #Do you want to run dynamics? Set dy (default dy = true)
-dy = false
+dy = false 
 
 #What is the total integration time you want to simulate? Set totTime
-totTime = 10.0
+totTime = 10.0 
 
 #How many Monte Carlo samples do you want to use? Set nSampleDyn
-nSampleDyn = 1000
+nSampleDyn = 10000 
 
 #How small do you want the step size of the Heun integrator? Set stepSizeHeun
-stepSizeHeun = 0.001
+stepSizeHeun = 0.001 # initial value 0.001, no difference for 0.0001
 
 #Do you want to invert the covariance matrix with MINRES or Pseudoinverse?
 #Set minres_ = true to solve with MINRES, false to solve with Pseudoinverse (default = true)
@@ -68,4 +68,4 @@ using DelimitedFiles
 end
 ################################# end ##########################################
 ################################################################################
-include("../main/init.jl")
+include("../../src/main/init.jl")

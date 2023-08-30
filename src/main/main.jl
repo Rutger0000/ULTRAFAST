@@ -16,6 +16,7 @@ addprocs(Nworkers)
 Lx = 4
 Ly = 4
 
+
 #How many hidden units M=Alpha*Lx*Ly do you want? Set Alpha
 Alpha = 4
 
@@ -55,6 +56,7 @@ stepSizeHeun = 0.002
 #Do you want to invert the covariance matrix with MINRES or Pseudoinverse?
 #Set minres_ = true to solve with MINRES, false to solve with Pseudoinverse (default = true)
 minres_ = true
+
 
 #What are the initial parameters for the dynamic W(t=0)? Import independent variational parameters
 #Note that real and imaginary parts are conveniently stored in separate files

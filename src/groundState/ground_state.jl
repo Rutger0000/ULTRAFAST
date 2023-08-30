@@ -42,50 +42,51 @@ function GS_optimization(GsHp::GS_hp, dim::Int64)
         #At the end of the loop, the energy sampled are returned in EnergyStates
         #The derivatives of the wavefunction are stored in ENWFDer
         EnergyStates = @distributed (vcat) for i=1:NW[1]
-              sampling(RBM_Par,J,i)
-         end
+            sampling(RBM_Par,J,i)
+        end
 
-         #Evaluation entries of S-matrix stored in the vector SVector
+        #Evaluation entries of S-matrix stored in the vector SVector
         SVector = @distributed (+) for i=1:NW[1]
             S_gen(dim)./NW[1]
-         end
+        end
 
-         #Sort entries SVector into the S matrix
-         SMatrix = Gen_S(SVector)
+        #Sort entries SVector into the S matrix
+        SMatrix = Gen_S(SVector)
 
-         #Regularization of the S-matrix with a small shift of the diagonal element of S
-         SMatrix = SMatrix .+ Matrix{Float64}(I,dim,dim).*max(100*(0.9)^NIter,0.0001)
+        #Regularization of the S-matrix with a small shift of the diagonal element of S
+        SMatrix = SMatrix .+ Matrix{Float64}(I,dim,dim).*max(100*(0.9)^NIter,0.0001)
 
-         #Inversion of the S-matrix with normal inversion routine (not pseudo-inverse)
-         InvS = inv(SMatrix)
+        #Inversion of the S-matrix with normal inversion routine (not pseudo-inverse)
+        InvS = inv(SMatrix)
 
-         #Store the total energy for each state
-         energy = EnergyStates[:]
-         #Calculate the mean value of the energy and energy variance and store them
-         mean_E = mean(energy); var_E = var(energy)
-         push!(Energy_,real(mean_E)); push!(Variance_,norm(var_E))
+        #Store the total energy for each state
+        energy = EnergyStates[:]
+        #Calculate the mean value of the energy and energy variance and store them
+        mean_E = mean(energy); var_E = var(energy)
+        push!(Energy_,real(mean_E)); push!(Variance_,norm(var_E))
 
-         ##calculate the derivative of the energy respect to the variational parameters and assign them to the array dF
-         EGrad = @distributed (+) for i=1:NW[1]
-            Egrad(dim)./NW[1]
-         end
+        ##calculate the derivative of the energy respect to the variational parameters and assign them to the array dF
+        EGrad = @distributed (+) for i=1:NW[1]
+        Egrad(dim)./NW[1]
+        end
 
-         #Update variational parameters according to SR optimization rule
-         for i=1:dim
-             W_RBM[i] = W_RBM[i] - GsHp.step_size*(transpose(InvS[i,:])*EGrad)
-         end
+        #Update variational parameters according to SR optimization rule
+        for i=1:dim
+            W_RBM[i] = W_RBM[i] - GsHp.step_size*(transpose(InvS[i,:])*EGrad)
+        end
 
-         #Update neural network parameters after optimization
-         for i in procs()
-             fetch(@spawnat i WToPar(RBM_Par,W_RBM))
-         end
+        #Update neural network parameters after optimization
+        for i in procs()
+            fetch(@spawnat i WToPar(RBM_Par,W_RBM))
+        end
 
-         #print value of energy every 10 steps
-         if NIter % 10 == false
-             println("Iteration step #$NIter")
-             println("Energy: $(real(mean_E)) +- $(norm(var_E))")
-             println(" ")
-         end
+        #print value of energy every 10 steps
+        if NIter % 10 == false
+            println("Iteration step #$NIter")
+            println("Energy: $(real(mean_E)) +- $(norm(var_E))")
+            display(W_RBM)
+            println(" ")
+        end
 
      end
 
