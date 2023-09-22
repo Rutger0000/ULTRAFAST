@@ -3,6 +3,24 @@
 #-neural network and lattice
 #-hyper-parameters of ground state and dynamic simulations
 
+################################################################################
+# Initialize variables from command LinearAlgebra
+################################################################################
+
+# Check the number of command line arguments
+# if length(ARGS) >= 2
+#     global Alpha = parse(Int, ARGS[1])  # First argument as Alpha (assuming it's a floating-point number)
+#     global L = parse(Int, ARGS[2])          # Second argument as L (assuming it's an integer)
+# else
+#     println("Usage: julia script.jl Alpha L")
+#     exit(1)  # Exit the program with an error code
+# end
+
+# # Your code can use Alpha and L from this point onward
+# println("Alpha = $Alpha")
+# println("L = $L")
+
+
 ############################ Parallelizzation ##################################
 using Distributed
 #How many workers do you want? Set Nworkers to number of CPUs
@@ -13,12 +31,12 @@ addprocs(Nworkers)
 ################################################################################
 ###################### Neural network and lattice ##############################
 #How large is your lattice? Set the lattice size Lx and Ly
-Lx = 4
-Ly = 4
+Lx = L
+Ly = L
 
 
 #How many hidden units M=Alpha*Lx*Ly do you want? Set Alpha
-Alpha = 4
+#Alpha = 1
 
 #What is the exchange interaction along x and y? Set Jx and Jy (default = 1)
 Jx = 1
@@ -62,7 +80,7 @@ minres_ = true
 #Note that real and imaginary parts are conveniently stored in separate files
 #First import package DelimitedFiles.jl to read and write files
 using DelimitedFiles
-WRBMInit = readdlm("src/output/W_RBM_16_4_real.jl") .+ im*readdlm("src/output/W_RBM_16_4_imag.jl")
+#WRBMInit = readdlm("src/output/W_RBM_16_4_real.jl") .+ im*readdlm("src/output/W_RBM_16_4_imag.jl")
 
 #What is the perturbation do you want to use along y? Define DeltaJ(t) (default DeltaJ(t)=0.1)
 @everywhere function DeltaJ(t::Float64)
@@ -71,3 +89,6 @@ end
 ################################# end ##########################################
 ################################################################################
 include("../main/init.jl")
+
+# Write the energy to a file
+writedlm("W_RBM_$(nspins)_$(alpha)_energy.jl", last(Energy_))

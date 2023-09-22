@@ -10,7 +10,6 @@ function sp_bond(RBMPar::RBM_par,Lt::Array{Complex{Float64},1},state::Array{Int6
 
 end
 
-
 #Finds the non-zero matrix elements of the hamiltonian on the given state
 #i.e. all the state' such that <state'|H|state> = conn(state') \neq 0
 #state' is encoded as the sequence of spin flips to be performed on state

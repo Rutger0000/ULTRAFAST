@@ -30,6 +30,7 @@
 @everywhere include("../dynamics/dynamics.jl")
 @everywhere include("../observables/spincorr.jl")
 @everywhere cd("src/output")
+
 #Define struct storing hyper-parameters set in main.jl
 GS_HP = GS_hp(nSampleGs,nIter,stepSize)
 DYN_HP = DYN_hp(nSampleDyn,totTime,stepSizeHeun,minres_)

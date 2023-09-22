@@ -69,7 +69,7 @@ function GS_optimization(GsHp::GS_hp, dim::Int64)
         EGrad = @distributed (+) for i=1:NW[1]
         Egrad(dim)./NW[1]
         end
-
+        
         #Update variational parameters according to SR optimization rule
         for i=1:dim
             W_RBM[i] = W_RBM[i] - GsHp.step_size*(transpose(InvS[i,:])*EGrad)
@@ -84,10 +84,9 @@ function GS_optimization(GsHp::GS_hp, dim::Int64)
         if NIter % 10 == false
             println("Iteration step #$NIter")
             println("Energy: $(real(mean_E)) +- $(norm(var_E))")
-            display(W_RBM)
+            # display(W_RBM)
             println(" ")
         end
-
      end
 
 ###########################   End main iteration    ############################

@@ -182,13 +182,14 @@ end
 # the vector "flips" contains the sites to be flipped
 function Log_wf(RBMPar::RBM_par,Lt::Array{Complex{Float64},1},state::Array{Int64,1},flips::Array{Int64,1})
 
+      # no changes in the state
       if length(flips) === 0
           return Complex(0)
       end;
 
       logwf = Complex(0)
 
-      #Change due to the visible bias
+      # Change due to the visible bias
         for i=1:length(flips)
           logwf -= RBMPar.a[flips[i]]*2*state[flips[i]]
         end;

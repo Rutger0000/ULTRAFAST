@@ -20,20 +20,20 @@ end
 #Heun integration scheme
 function heun(GenRHS,WRBMt::Array{Array{Complex{Float64}}},DYNHp::DYN_hp)
 
-    #initialized the time-interval of the simulation
+    # Initialized the time-interval of the simulation
     time = collect(0.:DYNHp.step_size:DYNHp.tot_time)
 
-    #Assign independent variational parameters at t=0 to new variable W_
+    # Assign independent variational parameters at t=0 to new variable W_
     W_ = WRBMt[1][:]
 
-    #Initialize network parameters
+    # Initialize network parameters
     RBM_Par = init_RBM_par(alpha,nspins)
-    #Sort network parameters to W_RBM independent parameters
+    # Sort network parameters to W_RBM independent parameters
     WToPar(RBM_Par,W_)
 
-    #If the number of workers exceeds the number of variational parameters,
-    #only a number of workers equals to the number of variational parameters will be used.
-    #The exceeding workers will be removed.
+    # If the number of workers exceeds the number of variational parameters,
+    # only a number of workers equals to the number of variational parameters will be used.
+    # The exceeding workers will be removed.
     if nprocs() > dim
         println("WARNING: number of workers exceeds number of viariational parameters. Only $dim workers will be used.")
         diff = nprocs()-dim
